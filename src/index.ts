@@ -4,8 +4,11 @@ import { NOT_FOUND } from "http-status-codes";
 import HttpException from "./exceptions/HTTPException";
 import errorMiddleware from "./middlewares/error-middleware";
 import * as userController from "./controllers/user";
+import * as districtRanking from "./controllers/air/districtRanking";
+import cors from "cors";
 
 const app: Express = express();
+// const cors = require("cors");
 const port: any = process.env.PORT || 8989;
 
 /** 解析请求body
@@ -13,12 +16,18 @@ const port: any = process.env.PORT || 8989;
  *express 已经集成了bodyParser，不用额外安装
  */
 app.use(express.json());
+app.use(cors());
 
 app.get("/", (_req: Request, res: Response) => {
   res.send("hell world");
 });
 
 app.post("/user/register", userController.postRegister);
+
+app.post(
+  "/big/air/queryAirMonitorDistrictHourRankingList",
+  districtRanking.postDistrictRanking
+);
 
 // 错误处理
 app.use((_req: Request, _res: Response, next: NextFunction) => {
